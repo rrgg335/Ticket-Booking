@@ -6,5 +6,6 @@ Route::post('signup',[AuthController::class,'signup']);
 Route::group(['middleware'=>['auth:api']],function(){
 	Route::prefix('bookings')->group(function(){
 		Route::post('/',[BookingsController::class,'create']);
+		Route::post('confirm',[BookingsController::class,'confirm']);
 	});
 });
