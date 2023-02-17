@@ -5,7 +5,7 @@ Route::post('signin',[AuthController::class,'signin']);
 Route::post('signup',[AuthController::class,'signup']);
 Route::group(['middleware'=>['auth:api']],function(){
 	Route::prefix('bookings')->group(function(){
-		Route::post('/',[BookingsController::class,'create']);
+		Route::post('check',[BookingsController::class,'check']);
 		Route::post('confirm',[BookingsController::class,'confirm']);
 	});
 });

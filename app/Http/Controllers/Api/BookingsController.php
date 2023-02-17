@@ -7,7 +7,7 @@ use App\Http\Requests\{ConfirmBookingRequest,CreateBookingRequest};// For valida
 use Exception,Log;
 class BookingsController extends Controller{
 	public function __construct(){}
-	public function create(CreateBookingRequest $request):JsonResponse{
+	public function check(CreateBookingRequest $request):JsonResponse{
 		$seat_no = $request->validated('seat_no');
 		$no_of_seats = $request->validated('no_of_seats');
 		$seats_to_book = $this->checkAvailability($seat_no,$no_of_seats);
@@ -19,7 +19,8 @@ class BookingsController extends Controller{
 		}else{
 			return response()->success([
 				'availability'=>false,
-				'message'=>'Your requested seats are not available'
+				'message'=>'Your requested seats are not available',
+				'alternative_seats'=>$this->alternativeSeats($no_of_seats)
 			]);
 		}
 	}
@@ -64,5 +65,17 @@ class BookingsController extends Controller{
 		}else{
 			return [];
 		}
+	}
+	private function alternativeSeats($no_of_seats):array{
+		$alphabets = range('A','Z');
+		foreach($alphabets as $alphabet){
+			for($i=1;$i < 10;$i++){
+				$seats_to_book = $this->checkAvailability($alphabet.$i,$no_of_seats);
+				if(!empty($seats_to_book)){
+					return $seats_to_book;
+				}
+			}
+		}
+		return [];
 	}
 }
